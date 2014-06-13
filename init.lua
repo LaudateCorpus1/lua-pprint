@@ -112,7 +112,7 @@ end
 
 
 function Printer:new(v, depth)
-   local p = self.init(depth)
+   local p = self:init(depth)
    return p:put_value(v)
 end
 
