@@ -84,10 +84,10 @@ end
 
 local Printer = {}
 
-function Printer:new(v, depth)
+function Printer:init(depth)
   local pprintor = {
     buffer = {},
-    depth = depth,
+    depth = depth or 0,
     level = 0,
     counters = {
       ['function'] = 0,
@@ -107,7 +107,13 @@ function Printer:new(v, depth)
     __index = Printer,
     __tostring = function(instance) return table.concat(instance.buffer) end
   } )
-  return pprintor:put_value(v)
+  return pprintor
+end
+
+
+function Printer:new(v, depth)
+   local p = self:init(depth)
+   return p:put_value(v)
 end
 
 
@@ -196,14 +202,23 @@ function Printer:put_tensor(t)
         self:puts(tostring(t))
     else
         self:puts('[torch.Tensor of dimension ')
-
-        n_dims = t:dim()
-        dim_sizes = t:size()
-        for i=1, n_dims-1 do
-            self:puts(dim_sizes[i]):puts('x')
-        end
-        self:puts(dim_sizes[n_dims]):puts(']')
+        self:put_tensor_dims(t)
+        self:puts(']')
     end
+end
+
+
+function Printer:put_tensor_dims(t)
+   n_dims = t:dim()
+   dim_sizes = t:size()
+   if n_dims == 0 then
+      self:puts('[0-dimensional tensor]')
+   else
+      for i=1, n_dims-1 do
+        self:puts(dim_sizes[i]):puts('x')
+      end
+      self:puts(dim_sizes[n_dims])
+   end
 end
 
 
@@ -257,6 +272,26 @@ function Printer:put_key(k)
 end
 
 
+local function print_tensor_dimensions(t)
+   local p = Printer.init()
+   p:put_tensor_dims(t)
+   return tostring(p)
+end
+
+
+local function print_tensor_info(t)
+   local p = Printer.init()
+   if t == nil then p:puts("[nil]") end
+   p:puts('['):put_tensor_dims(t)
+   if t.min then p:puts(', min: '):put_value(t:min()) end
+   if t.mean then p:puts(', mean: '):put_value(t:mean()) end
+   if t.max then p:puts(', max: '):put_value(t:max()) end
+   if t.type then p:puts(', type: '):put_value(t:type()) end
+   p:puts(']')
+   return tostring(p)
+end
+
+
 local function pretty_string(t, depth)
   depth = depth or 4
   return tostring(Printer:new(t, depth))
@@ -269,6 +304,8 @@ end
 
 pprint = {
     pretty_string=pretty_string,
+    dims=print_tensor_dimensions,
+    info=print_tensor_info,
     __call=pprint_pprint,
     printer = function(depth) depth = depth or 4
         local function pretty_string(...)
