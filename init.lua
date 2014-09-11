@@ -281,13 +281,26 @@ end
 
 local function print_tensor_info(t)
    local p = Printer.init()
-   if t == nil then p:puts("[nil]") end
-   p:puts('['):put_tensor_dims(t)
-   if t.min then p:puts(', min: '):put_value(t:min()) end
-   if t.mean then p:puts(', mean: '):put_value(t:mean()) end
-   if t.max then p:puts(', max: '):put_value(t:max()) end
-   if t.type then p:puts(', type: '):put_value(t:type()) end
-   p:puts(']')
+
+   -- if we find a table, recursively call info on its elements
+   if type(t) == 'table' then
+      local newline = ' '
+      if #t > 1 then newline = '\n' end
+      p:puts('{'..newline)
+      for i=1,#t do
+         p:puts(print_tensor_info(t[i]))
+         p:puts(newline)
+      end
+      p:puts('}')
+   else
+      if t == nil then p:puts("[nil]") end
+      p:puts('['):put_tensor_dims(t)
+      if t.min then p:puts(', min: '):put_value(t:min()) end
+      if t.mean then p:puts(', mean: '):put_value(t:mean()) end
+      if t.max then p:puts(', max: '):put_value(t:max()) end
+      if t.type then p:puts(', type: '):put_value(t:type()) end
+      p:puts(']')
+   end
    return tostring(p)
 end
 
