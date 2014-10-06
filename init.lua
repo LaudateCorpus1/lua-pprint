@@ -84,10 +84,11 @@ end
 
 local Printer = {}
 
-function Printer:init(depth)
+function Printer:init(depth, inline)
   local pprintor = {
     buffer = {},
     depth = depth or 0,
+    inline = inline or false,
     level = 0,
     counters = {
       ['function'] = 0,
@@ -111,8 +112,8 @@ function Printer:init(depth)
 end
 
 
-function Printer:new(v, depth)
-   local p = self:init(depth)
+function Printer:new(v, depth, inline)
+   local p = self:init(depth, inline)
    return p:put_value(v)
 end
 
@@ -127,7 +128,11 @@ end
 
 
 function Printer:tabify()
-  self:puts("\n", string.rep("  ", self.level))
+  if self.inline then
+    self:puts(" ")
+  else
+    self:puts("\n", string.rep("  ", self.level))
+  end
   return self
 end
 
@@ -305,18 +310,24 @@ local function print_tensor_info(t)
 end
 
 
-local function pretty_string(t, depth)
+local function pretty_string(t, depth, inline)
   depth = depth or 4
-  return tostring(Printer:new(t, depth))
+  inline = inline or false
+  return tostring(Printer:new(t, depth, inline))
 end
 
+-- Returns an inline string.
+local function string(t, depth)
+  return pretty_string(t, depth, true)
+end
 
 local function pprint_pprint(self, data, depth)
     print(pretty_string(data, depth))
 end
 
 pprint = {
-    pretty_string=pretty_string,
+    pretty_string=pretty_string, -- multi-line string
+    string=string, -- inline string
     dims=print_tensor_dimensions,
     info=print_tensor_info,
     __call=pprint_pprint,
