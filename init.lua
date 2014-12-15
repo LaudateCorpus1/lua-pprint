@@ -3,8 +3,6 @@
 -- * added support for tensors
 -- * changed various function names
 
-require 'util'
-
 -- Wraps quoted strings in apostraphes
 local function smart_quote(str)
   if string.match( string.gsub(str,"[^'\"]",""), '^"+$' ) then
@@ -260,7 +258,7 @@ function Printer:put_value(v)
     end
   elseif tv == 'table' then
     self:put_table(v)
-  elseif util.is_tensor(v) then
+  elseif torch.isTensor(v) then
     self:put_tensor(v)
   else
     self:puts('<',tv,'>')
