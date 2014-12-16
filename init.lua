@@ -3,6 +3,8 @@
 -- * added support for tensors
 -- * changed various function names
 
+require 'torch'
+
 -- Wraps quoted strings in apostraphes
 local function smart_quote(str)
   if string.match( string.gsub(str,"[^'\"]",""), '^"+$' ) then
