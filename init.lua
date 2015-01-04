@@ -214,8 +214,8 @@ end
 
 
 function Printer:put_tensor_dims(t)
-   n_dims = t:dim()
-   dim_sizes = t:size()
+   local n_dims = t:dim()
+   local dim_sizes = t:size()
    if n_dims == 0 then
       self:puts('[0-dimensional tensor]')
    else
