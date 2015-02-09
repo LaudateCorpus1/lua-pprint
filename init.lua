@@ -206,7 +206,7 @@ function Printer:put_tensor(t)
     if t:nElement() <= 20 then
         self:puts(tostring(t))
     else
-        self:puts('[torch.Tensor of dimension ')
+        self:puts('[' .. torch.typename(t) .. ' of dimension ')
         self:put_tensor_dims(t)
         self:puts(']')
     end
