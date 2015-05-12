@@ -29,7 +29,7 @@ whereas pprint only creates them based on non-numerical indices of the table.
 
 There are different ways in which pprint can be used:
 
-### General (torch/lua) usages 
+### General (torch and lua) usages 
 
 * Using `pprint(data, depth=4)` directly, as seen in the example below:
 
