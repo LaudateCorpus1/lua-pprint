@@ -1,7 +1,10 @@
--- Code adapted from inspect.lua, here (https://github.com/kikito/inspect.lua).
--- * changed some formatting, removed numbering of elements
--- * added support for tensors
--- * changed various function names
+--[[ Pretty Printing for Torch and Lua, main module.
+
+Code adapted from inspect.lua, here (https://github.com/kikito/inspect.lua).
+ * changed some formatting, removed numbering of elements
+ * added support for tensors
+ * changed various function names
+]]
 
 require 'torch'
 
