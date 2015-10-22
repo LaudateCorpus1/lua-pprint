@@ -206,7 +206,7 @@ end
 
 function Printer:put_tensor(t)
   local size = t:nElement()
-  if t:nElement() <= 20 then
+  if size <= 20 then
     self:puts(tostring(t))
   else
     self:puts('[' .. torch.typename(t) .. ' of dimension ')
@@ -215,6 +215,16 @@ function Printer:put_tensor(t)
   end
 end
 
+function Printer:put_storage(t)
+  local size = t:size()
+  if size <= 20 then
+    self:puts(tostring(t))
+  else
+    self:puts('[' .. torch.typename(t) .. ' of size ')
+    self:puts(size)
+    self:puts(']')
+  end
+end
 
 function Printer:put_tensor_dims(t)
   local n_dims = t:dim()
@@ -265,6 +275,8 @@ function Printer:put_value(v)
     self:put_table(v)
   elseif torch.isTensor(v) then
     self:put_tensor(v)
+  elseif torch.isStorage(v) then
+    self:put_storage(v)
   else
     self:puts('<',tv,'>')
   end
