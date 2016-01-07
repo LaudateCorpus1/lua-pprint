@@ -31,7 +31,7 @@ There are different ways in which pprint can be used:
 
 ### General (torch and lua) usages 
 
-* Using `pprint(data, depth=4)` directly, as seen in the example below:
+* Using `pprint(data)` directly, as seen in the example below:
 
 ```lua
 require 'pprint'
@@ -49,15 +49,33 @@ Outputs:
 [torch.DoubleTensor of dimension 21] }
 ```
 
-* Calling `pprint.pretty_string(data, depth=4)`, which differs from
-`pprint(data, depth=4)` in that the method returns the generated string instead
+* Calling `pprint.pretty_string(data)`, which differs from
+`pprint(data)` in that the method returns the generated string instead
 of printing it. 
 
-* Calling `pprint.string(data, depth=4)`, which is the inline result
-version of `pprint.pretty_string(data, depth=4)`.
+* Calling `pprint.string(data)`, which is the inline result
+version of `pprint.pretty_string(data)`.
 
-* Using `pprint.printer(depth=4)` to create a printer that returns a the
+* Using `pprint.printer()` to create a printer that returns a the
 concatenated `pretty_string` version of an arbitrary amount of parameters.
+
+* When printing a table, the default depth is 4. This depth can be modified:
+
+```lua
+require 'pprint'
+a = {1, {2, {3, {4, {5}}}}}
+pprint(a, 2)
+print(pprint.pretty_string(a, 3))
+pprint(a)
+```
+
+Outputs:
+
+```lua
+{ 1, { 2, {...} } }	
+{ 1, { 2, { 3, {...} } } }	
+{ 1, { 2, { 3, { 4, {...} } } } }
+```
 
 ### Tensor specific usage
 
